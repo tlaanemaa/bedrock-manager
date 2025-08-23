@@ -8,6 +8,7 @@ export default function Dashboard() {
   const { servers, error: serversError, setServers, setError: setServersError } = useServersStore();
   const { worlds, error: worldsError, setWorlds, setError: setWorldsError } = useWorldsStore();
   const [isLoading, setIsLoading] = useState(true);
+  const [showCreateServer, setShowCreateServer] = useState(false);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -48,6 +49,59 @@ export default function Dashboard() {
 
   const handleRefresh = () => {
     fetchData();
+  };
+
+  const handleStartServer = async (serverId: string) => {
+    try {
+      const response = await fetch(`/api/servers/${serverId}/start`, { method: 'POST' });
+      if (response.ok) {
+        // Refresh data to show updated status
+        setTimeout(fetchData, 1000); // Wait a bit for container to start
+      } else {
+        console.error('Failed to start server');
+      }
+    } catch (error) {
+      console.error('Error starting server:', error);
+    }
+  };
+
+  const handleStopServer = async (serverId: string) => {
+    try {
+      const response = await fetch(`/api/servers/${serverId}/stop`, { method: 'POST' });
+      if (response.ok) {
+        // Refresh data to show updated status
+        setTimeout(fetchData, 1000); // Wait a bit for container to stop
+      } else {
+        console.error('Failed to stop server');
+      }
+    } catch (error) {
+      console.error('Error stopping server:', error);
+    }
+  };
+
+  const handleCreateServer = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const serverName = formData.get('serverName') as string;
+    const port = parseInt(formData.get('port') as string);
+
+    try {
+      const response = await fetch('/api/servers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: serverName, port })
+      });
+
+      if (response.ok) {
+        setShowCreateServer(false);
+        // Refresh data to show new server
+        setTimeout(fetchData, 2000); // Wait a bit for container to start
+      } else {
+        console.error('Failed to create server');
+      }
+    } catch (error) {
+      console.error('Error creating server:', error);
+    }
   };
 
   if (isLoading) {
@@ -111,11 +165,22 @@ export default function Dashboard() {
           {/* Servers Section */}
           <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl shadow-2xl">
             <div className="px-6 py-4 border-b border-gray-700">
-              <div className="flex items-center space-x-2">
-                <svg className="h-5 w-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                </svg>
-                <h2 className="text-lg font-medium text-white">Servers</h2>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <svg className="h-5 w-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                  </svg>
+                  <h2 className="text-lg font-medium text-white">Servers</h2>
+                </div>
+                <button
+                  onClick={() => setShowCreateServer(true)}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded-lg transition-colors flex items-center space-x-2"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  <span>Create Server</span>
+                </button>
               </div>
               <p className="text-sm text-gray-400 mt-1">{servers.length} server(s) available</p>
             </div>
@@ -154,6 +219,23 @@ export default function Dashboard() {
                           }`}>
                             {server.status}
                           </span>
+                          
+                          {/* Server Control Buttons */}
+                          {server.status === 'running' ? (
+                            <button
+                              onClick={() => handleStopServer(server.id)}
+                              className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg transition-colors"
+                            >
+                              Stop
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleStartServer(server.id)}
+                              className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs rounded-lg transition-colors"
+                            >
+                              Start
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -223,6 +305,67 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Create Server Modal */}
+      {showCreateServer && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 w-full max-w-md mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-white">Create New Server</h3>
+              <button
+                onClick={() => setShowCreateServer(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <form onSubmit={handleCreateServer} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Server Name</label>
+                <input
+                  type="text"
+                  name="serverName"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  placeholder="Enter server name"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Port</label>
+                <input
+                  type="number"
+                  name="port"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  placeholder="19132"
+                  min="19132"
+                  max="19200"
+                  required
+                />
+              </div>
+              
+              <div className="flex space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateServer(false)}
+                  className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
+                >
+                  Create Server
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
