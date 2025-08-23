@@ -10,6 +10,8 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateServer, setShowCreateServer] = useState(false);
   const [showImportWorld, setShowImportWorld] = useState(false);
+  const [importingWorld, setImportingWorld] = useState(false);
+  const [exportingWorld, setExportingWorld] = useState<string | null>(null);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -116,6 +118,7 @@ export default function Dashboard() {
       return;
     }
 
+    setImportingWorld(true);
     try {
       const uploadFormData = new FormData();
       uploadFormData.append('worldName', worldName);
@@ -131,14 +134,20 @@ export default function Dashboard() {
         // Refresh data to show new world
         setTimeout(fetchData, 2000); // Wait a bit for import to complete
       } else {
-        console.error('Failed to import world');
+        const errorData = await response.json();
+        console.error('Failed to import world:', errorData.error);
+        alert(`Failed to import world: ${errorData.error}`);
       }
     } catch (error) {
       console.error('Error importing world:', error);
+      alert('Error importing world. Please try again.');
+    } finally {
+      setImportingWorld(false);
     }
   };
 
   const handleExportWorld = async (worldId: string, worldName: string) => {
+    setExportingWorld(worldId);
     try {
       const response = await fetch(`/api/worlds/${worldId}/export`);
       if (response.ok) {
@@ -153,10 +162,15 @@ export default function Dashboard() {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
       } else {
-        console.error('Failed to export world');
+        const errorData = await response.json();
+        console.error('Failed to export world:', errorData.error);
+        alert(`Failed to export world: ${errorData.error}`);
       }
     } catch (error) {
       console.error('Error exporting world:', error);
+      alert('Error exporting world. Please try again.');
+    } finally {
+      setExportingWorld(null);
     }
   };
 
@@ -358,12 +372,22 @@ export default function Dashboard() {
                         <div className="flex items-center space-x-3">
                           <button
                             onClick={() => handleExportWorld(world.id, world.name)}
-                            className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors flex items-center space-x-1"
+                            disabled={exportingWorld === world.id}
+                            className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors flex items-center space-x-1 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            <span>Export</span>
+                            {exportingWorld === world.id ? (
+                              <div className="flex items-center space-x-1">
+                                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                                <span>Exporting...</span>
+                              </div>
+                            ) : (
+                              <>
+                                <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <span>Export</span>
+                              </>
+                            )}
                           </button>
                           
                           <div className="text-right">
@@ -496,9 +520,17 @@ export default function Dashboard() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                  disabled={importingWorld}
+                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Import World
+                  {importingWorld ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Importing...</span>
+                    </div>
+                  ) : (
+                    'Import World'
+                  )}
                 </button>
               </div>
             </form>
