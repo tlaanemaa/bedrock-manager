@@ -69,8 +69,19 @@ export async function GET(
       
       archive.pipe(output);
       
-      // Add all files from temp directory to the archive
-      archive.directory(tempDir, false);
+      // Add world files to the archive (excluding the output .mcworld file)
+      const tempFiles = await fs.readdir(tempDir);
+      for (const file of tempFiles) {
+        if (file !== `${world.name}.mcworld`) {
+          const filePath = path.join(tempDir, file);
+          const stats = await fs.stat(filePath);
+          if (stats.isDirectory()) {
+            archive.directory(filePath, file);
+          } else {
+            archive.file(filePath, { name: file });
+          }
+        }
+      }
       
       // Wait for archive to finish
       await new Promise<void>((resolve, reject) => {
@@ -105,7 +116,7 @@ export async function GET(
   } catch (error) {
     console.error('Failed to export world:', error);
     return NextResponse.json(
-      { error: 'Failed to export world' },
+      { error: `Failed to export world: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }

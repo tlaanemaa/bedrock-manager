@@ -8,7 +8,7 @@ export async function GET() {
   } catch (error) {
     console.error('Failed to get worlds:', error);
     return NextResponse.json(
-      { error: 'Failed to get worlds' },
+      { error: `Failed to get worlds: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Failed to create world:', error);
     return NextResponse.json(
-      { error: 'Failed to create world' },
+      { error: `Failed to create world: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }

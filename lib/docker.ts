@@ -45,7 +45,7 @@ export async function getMinecraftContainers(): Promise<ContainerInfo[]> {
       }));
   } catch (error) {
     console.error('Failed to get Docker containers:', error);
-    throw new Error('Failed to connect to Docker daemon');
+    throw new Error(`Failed to connect to Docker daemon: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
@@ -72,7 +72,7 @@ export async function startContainer(containerId: string): Promise<void> {
     await container.start();
   } catch (error) {
     console.error('Failed to start container:', error);
-    throw new Error('Failed to start container');
+    throw new Error(`Failed to start container: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
@@ -85,7 +85,7 @@ export async function stopContainer(containerId: string): Promise<void> {
     await container.stop();
   } catch (error) {
     console.error('Failed to stop container:', error);
-    throw new Error('Failed to stop container');
+    throw new Error(`Failed to stop container: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
@@ -104,7 +104,7 @@ export async function createServerContainer(
       Image: DOCKER.IMAGE,
       name: containerName,
       Env: [
-        SERVER.EULA,
+        `EULA=${SERVER.EULA}`,
         `SERVER_NAME=${name}`,
         `GAMEMODE=${SERVER.DEFAULT_GAMEMODE}`,
         `DIFFICULTY=${SERVER.DEFAULT_DIFFICULTY}`,
@@ -131,7 +131,7 @@ export async function createServerContainer(
     return container.id;
   } catch (error) {
     console.error('Failed to create container:', error);
-    throw new Error('Failed to create server container');
+    throw new Error(`Failed to create server container: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
@@ -144,19 +144,22 @@ export async function getAvailablePorts(): Promise<number[]> {
   
   containers.forEach(container => {
     container.ports.forEach(portMapping => {
-      const publicPort = parseInt(portMapping.split(':')[1]);
-      if (!isNaN(publicPort)) {
-        usedPorts.add(publicPort);
+      const parts = portMapping.split(':');
+      if (parts.length >= 2 && parts[1]) {
+        const publicPort = parseInt(parts[1], 10);
+        if (!isNaN(publicPort)) {
+          usedPorts.add(publicPort);
+        }
       }
     });
   });
 
-      const availablePorts: number[] = [];
-    for (let port = DOCKER.PORT_RANGE.START; port < DOCKER.PORT_RANGE.END; port++) {
-      if (!usedPorts.has(port)) {
-        availablePorts.push(port);
-      }
+  const availablePorts: number[] = [];
+  for (let port = DOCKER.PORT_RANGE.START; port < DOCKER.PORT_RANGE.END; port++) {
+    if (!usedPorts.has(port)) {
+      availablePorts.push(port);
     }
+  }
 
   return availablePorts;
 }

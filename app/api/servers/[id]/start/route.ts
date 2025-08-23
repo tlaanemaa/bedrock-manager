@@ -19,7 +19,7 @@ export async function POST(
   } catch (error) {
     console.error('Failed to start server:', error);
     return NextResponse.json(
-      { error: 'Failed to start server' },
+      { error: `Failed to start server: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }

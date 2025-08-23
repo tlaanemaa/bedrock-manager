@@ -157,7 +157,7 @@ export async function createServerMount(name: string): Promise<void> {
     await fs.mkdir(path.join(serverPath, 'resource_packs'), { recursive: true });
   } catch (error) {
     console.error('Failed to create server mount:', error);
-    throw new Error('Failed to create server mount directory');
+    throw new Error(`Failed to create server mount directory: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
@@ -170,7 +170,7 @@ export async function deleteServerMount(name: string): Promise<void> {
     await fs.rm(serverPath, { recursive: true, force: true });
   } catch (error) {
     console.error('Failed to delete server mount:', error);
-    throw new Error('Failed to delete server mount directory');
+    throw new Error(`Failed to delete server mount directory: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 

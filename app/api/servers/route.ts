@@ -20,7 +20,13 @@ export async function GET() {
         id: container.id,
         name: container.name,
         status: container.status,
-        port: parseInt(container.ports[0]?.split(':')[1] || '19132'),
+        port: (() => {
+          const portString = container.ports[0];
+          if (!portString) return 0;
+          const parts = portString.split(':');
+          const publicPort = parts[1];
+          return publicPort ? parseInt(publicPort, 10) : 0;
+        })(),
         world: world || undefined,
         containerId: container.id
       };
@@ -45,7 +51,7 @@ export async function GET() {
   } catch (error) {
     console.error('Failed to get servers:', error);
     return NextResponse.json(
-      { error: 'Failed to get servers' },
+      { error: `Failed to get servers: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }
@@ -58,6 +64,24 @@ export async function POST(request: NextRequest) {
     if (!name || !port) {
       return NextResponse.json(
         { error: 'Name and port are required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate port range
+    if (port < 19132 || port > 19200) {
+      return NextResponse.json(
+        { error: 'Port must be between 19132 and 19200' },
+        { status: 400 }
+      );
+    }
+
+    // Check if port is already in use
+    const { getAvailablePorts } = await import('@/lib/docker');
+    const availablePorts = await getAvailablePorts();
+    if (!availablePorts.includes(port)) {
+      return NextResponse.json(
+        { error: `Port ${port} is already in use. Available ports: ${availablePorts.slice(0, 5).join(', ')}${availablePorts.length > 5 ? '...' : ''}` },
         { status: 400 }
       );
     }
@@ -75,7 +99,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Failed to create server:', error);
     return NextResponse.json(
-      { error: 'Failed to create server' },
+      { error: `Failed to create server: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }

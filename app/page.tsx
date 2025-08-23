@@ -16,7 +16,7 @@ export default function Dashboard() {
   // Fetch data on component mount
   useEffect(() => {
     fetchData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // fetchData changes on every render, but we only want to run on mount
 
   const fetchData = async () => {
     setIsLoading(true);
