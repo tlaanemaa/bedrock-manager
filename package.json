@@ -2,6 +2,7 @@
   "name": "bedrock-manager",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
@@ -18,7 +19,6 @@
   "dependencies": {
     "@types/archiver": "^6.0.3",
     "@types/dockerode": "^3.3.43",
-    "@types/extract-zip": "^2.0.3",
     "archiver": "^7.0.1",
     "dockerode": "^4.0.7",
     "extract-zip": "^2.0.1",

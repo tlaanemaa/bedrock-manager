@@ -1,11 +1,7 @@
 // File system paths
 export const PATHS = {
-  SERVERS_ROOT: process.env.TEST_MODE === 'true' 
-    ? '/app/test/test-data/servers' 
-    : '/srv/minecraft/bedrock/servers',
-  UPLOAD_TEMP: process.env.TEST_MODE === 'true' 
-    ? '/app/test/test-data/temp' 
-    : '/tmp'
+  SERVERS_ROOT: '/srv/minecraft/bedrock/servers',
+  UPLOAD_TEMP: '/tmp'
 } as const;
 
 // Docker configuration

@@ -11,9 +11,10 @@ services:
       - /app/node_modules
       - ./test:/app/test
       - /var/run/docker.sock:/var/run/docker.sock
+      # Mount a shared servers directory for all server data
+      - ./test/mount/servers:/srv/minecraft/bedrock/servers
     environment:
       - NODE_ENV=development
-      - TEST_MODE=true
     command: npm run dev
     networks:
       - dev-network
@@ -31,7 +32,8 @@ services:
       - DIFFICULTY=normal
       - MAX_PLAYERS=10
     volumes:
-      - test-minecraft-data:/data
+      # Mount the server data to the local test directory structure
+      - ./test/mount/servers/testserver:/data
     networks:
       - dev-network
     restart: unless-stopped
@@ -39,7 +41,3 @@ services:
 networks:
   dev-network:
     driver: bridge
-
-volumes:
-  test-minecraft-data:
-    driver: local

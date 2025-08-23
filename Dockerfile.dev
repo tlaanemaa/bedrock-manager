@@ -16,9 +16,12 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci
 
+# Copy startup script
+COPY scripts/startup.sh /app/startup.sh
+RUN chmod +x /app/startup.sh
+
 # Create necessary directories
-RUN mkdir -p /app/test-data \
-    && mkdir -p /app/test-worlds
+RUN mkdir -p /app/test-worlds
 
 # Expose port
 EXPOSE 3000
@@ -28,4 +31,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:3000/api/health || exit 1
 
 # Start in development mode (will be overridden by docker-compose)
-CMD ["npm", "run", "dev"]
+CMD ["/app/startup.sh"]

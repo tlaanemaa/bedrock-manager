@@ -107,7 +107,7 @@ bedrock-manager/
 │   └── stores/            # Zustand state management
 ├── test/                   # 🆕 All testing
 │   ├── test-dev.mjs       # Quick test script
-│   └── test-data/         # Test worlds and servers
+│   └── mount/              # Docker volume mount landing pad
 ├── docs/                   # Documentation
 ├── docker-compose.dev.yml  # Development environment
 └── package.json            # Dependencies and scripts
@@ -185,7 +185,6 @@ npm run dev:restart
 
 ### **Environment Variables**
 - `NODE_ENV=development` - Enables dev mode
-- `TEST_MODE=true` - Uses test data paths
 
 ### **Ports**
 - **Bedrock Manager**: http://localhost:3000
@@ -238,7 +237,7 @@ npm run all-checks
 
 ### **Data Management**
 - Test data persists between restarts
-- Modify test data in `test/test-data/`
+- Modify test data in `test/mount/`
 - Changes are immediately available
 
 ### **Container Management**
@@ -252,7 +251,7 @@ npm run all-checks
 |-------|----------|----------|
 | **Port 3000 in use** | "Address already in use" | Stop other services, restart dev environment |
 | **Docker permission** | "Permission denied" | Restart Docker Desktop, check socket access |
-| **Test data missing** | "0 worlds found" | Check `test/test-data/` exists, restart containers |
+| **Test data missing** | "0 worlds found" | Check `test/mount/` exists, restart containers |
 | **Hot reload not working** | Changes don't appear | Check container logs, restart if needed |
 | **Minecraft server down** | "Server not responding" | Check container status, restart if needed |
 
