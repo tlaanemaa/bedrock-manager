@@ -60,7 +60,8 @@ servers/
 ### Architecture
 - **Frontend**: Next.js 15 with React 19 and Tailwind CSS
 - **Backend**: Next.js API routes with direct file system and Docker API access
-- **State Management**: No database, derive all state from system
+- **Frontend State**: Zustand stores for UI state and caching
+- **Backend State**: No database, derive all state from system
 - **File Operations**: Node.js built-in modules with temp directory usage
 - **Docker Integration**: dockerode for direct Docker API access
 
