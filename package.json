@@ -8,7 +8,12 @@
     "type-check": "tsc --noEmit",
     "start": "next start",
     "lint": "eslint",
-    "all-checks": "npm run lint && npm run type-check"
+    "all-checks": "npm run lint && npm run type-check",
+    "dev:start": "docker-compose -f docker-compose.dev.yml up -d --build",
+    "dev:stop": "docker-compose -f docker-compose.dev.yml down",
+    "dev:restart": "docker-compose -f docker-compose.dev.yml restart",
+    "dev:logs": "docker-compose -f docker-compose.dev.yml logs -f",
+    "test:dev": "node test/test-dev.mjs"
   },
   "dependencies": {
     "@types/archiver": "^6.0.3",

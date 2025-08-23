@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
       await fs.writeFile(tempFilePath, fileBuffer);
 
       // Extract the .mcworld file (it's a zip file)
-      const extract = require('extract-zip');
+      const { default: extract } = await import('extract-zip');
       await extract(tempFilePath, { dir: extractDir });
 
       // Validate that this is a valid .mcworld file

@@ -1,0 +1,45 @@
+services:
+  # Bedrock Manager (dev mode)
+  bedrock-manager-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./test:/app/test
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - NODE_ENV=development
+      - TEST_MODE=true
+    command: npm run dev
+    networks:
+      - dev-network
+
+  # Test Minecraft server (persistent)
+  test-minecraft-server:
+    image: itzg/minecraft-bedrock-server
+    container_name: test-minecraft-server
+    ports:
+      - "19132:19132/udp"
+    environment:
+      - EULA=TRUE
+      - SERVER_NAME=TestServer
+      - GAMEMODE=survival
+      - DIFFICULTY=normal
+      - MAX_PLAYERS=10
+    volumes:
+      - test-minecraft-data:/data
+    networks:
+      - dev-network
+    restart: unless-stopped
+
+networks:
+  dev-network:
+    driver: bridge
+
+volumes:
+  test-minecraft-data:
+    driver: local

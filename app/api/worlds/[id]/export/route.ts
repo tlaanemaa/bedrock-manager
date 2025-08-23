@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
+import fsSync from 'fs';
 import path from 'path';
 import { getAllWorlds } from '@/lib/filesystem';
 import { PATHS } from '@/lib/constants';
@@ -64,7 +65,7 @@ export async function GET(
       // Create the .mcworld file (zip archive)
       const archive = archiver('zip', { zlib: { level: 9 } });
       const outputPath = path.join(tempDir, `${world.name}.mcworld`);
-      const output = fs.createWriteStream(outputPath);
+      const output = fsSync.createWriteStream(outputPath);
       
       archive.pipe(output);
       
@@ -72,8 +73,8 @@ export async function GET(
       archive.directory(tempDir, false);
       
       // Wait for archive to finish
-      await new Promise((resolve, reject) => {
-        output.on('close', resolve);
+      await new Promise<void>((resolve, reject) => {
+        output.on('close', () => resolve());
         archive.on('error', reject);
         archive.finalize();
       });
@@ -85,9 +86,9 @@ export async function GET(
       await fs.rm(tempDir, { recursive: true, force: true });
 
       // Return the file as a download
-      return new NextResponse(fileBuffer, {
+      return new NextResponse(new Uint8Array(fileBuffer), {
         headers: {
-          'Content-Type': 'application/octet-stream',
+          'Content-Type': 'application/zip',
           'Content-Disposition': `attachment; filename="${world.name}.mcworld"`,
           'Content-Length': fileBuffer.length.toString()
         }

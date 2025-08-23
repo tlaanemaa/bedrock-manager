@@ -1,36 +1,151 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎮 Bedrock Manager
 
-## Getting Started
+**A modern, containerized management UI for Minecraft Bedrock servers**
 
-First, run the development server:
+Build, deploy, and manage your Minecraft Bedrock servers with a beautiful web interface. Perfect for server administrators who want a professional tool to manage multiple worlds and servers.
 
+## 🚀 **What This Is**
+
+Bedrock Manager is a **web-based dashboard** that lets you:
+- 🖥️ **Manage Servers**: Start, stop, and monitor Minecraft Bedrock servers
+- 🌍 **Handle Worlds**: Import/export .mcworld files, manage world data
+- 📦 **Manage Addons**: Upload .mcaddon files, attach to worlds
+- 📊 **Monitor Status**: Real-time server health and performance
+- 🎨 **Beautiful UI**: Modern dark theme with Minecraft-inspired design
+
+## 🏗️ **What We're Building**
+
+This is a **full-stack web application** built with:
+- **Frontend**: Next.js 15 + React 19 + Tailwind CSS
+- **Backend**: Node.js API routes with Docker integration
+- **Container Management**: dockerode for server lifecycle
+- **File Operations**: Native Node.js for world/addon management
+- **State Management**: Zustand for reactive UI state
+
+## 🚀 **Quick Start (Recommended)**
+
+### 1. **Start Development Environment**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# This starts everything: Bedrock Manager + test Minecraft server
+npm run dev:start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. **Test Everything Works**
+```bash
+# Quick health check and API tests
+npm run test:dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. **Open the UI**
+Open [http://localhost:3000](http://localhost:3000) in your browser
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. **Stop When Done**
+```bash
+npm run dev:stop
+```
 
-## Learn More
+## 🛠️ **Development Commands**
 
-To learn more about Next.js, take a look at the following resources:
+| Command | What It Does |
+|---------|-------------|
+| `npm run dev:start` | 🚀 Start dev environment (containers + hot reload) |
+| `npm run test:dev` | 🧪 Quick test of running service |
+| `npm run dev:logs` | 📋 View container logs |
+| `npm run dev:restart` | 🔄 Restart dev environment |
+| `npm run dev:stop` | 🛑 Stop and clean up |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🌟 **Key Features**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### **Server Management**
+- ✅ Start/stop Minecraft Bedrock servers
+- ✅ Real-time status monitoring
+- ✅ Port management and conflict detection
+- ✅ Server configuration editing
 
-## Deploy on Vercel
+### **World Management**
+- ✅ Import .mcworld files
+- ✅ Export worlds as .mcworld files
+- ✅ World validation and error handling
+- ✅ Automatic file restructuring
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### **Addon Support**
+- ✅ Upload .mcaddon files
+- ✅ Attach addons to worlds
+- ✅ Remove addons from worlds
+- ✅ Addon validation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### **Modern UI**
+- ✅ Dark theme with Minecraft colors
+- ✅ Responsive design
+- ✅ Real-time updates
+- ✅ Intuitive server/world management
+
+## 🏗️ **Architecture Overview**
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Web UI        │    │   API Routes     │    │   Docker        │
+│   (Next.js)     │◄──►│   (Node.js)      │◄──►│   Integration   │
+│                 │    │                  │    │   (dockerode)   │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │
+                                ▼
+                       ┌──────────────────┐
+                       │   File System    │
+                       │   Operations     │
+                       │   (Worlds/Data)  │
+                       └──────────────────┘
+```
+
+## 📚 **Documentation**
+
+- **[Development Workflow](docs/DEVELOPMENT.md)** - Complete development guide
+- **[API Reference](docs/API.md)** - All API endpoints and usage
+- **[Architecture](docs/ARCHITECTURE.md)** - System design and components
+
+## 🎯 **Use Cases**
+
+- **Server Administrators**: Manage multiple Minecraft servers
+- **World Creators**: Import/export and manage world files
+- **Development Teams**: Test and iterate on server configurations
+- **Home Users**: Simple server management without command line
+
+## 🚀 **Getting Started for Developers**
+
+```bash
+# Clone and setup
+git clone <your-repo>
+cd bedrock-manager
+npm install
+
+# Start development environment
+npm run dev:start
+
+# Test everything works
+npm run test:dev
+
+# Open in browser
+# http://localhost:3000
+```
+
+## 🤝 **Contributing**
+
+1. **Start dev environment**: `npm run dev:start`
+2. **Make changes**: Edit files, see changes instantly
+3. **Test changes**: `npm run test:dev`
+4. **Run checks**: `npm run all-checks`
+5. **Submit PR**: With clear description of changes
+
+## 📋 **Requirements**
+
+- **Docker Desktop** (for containerized development)
+- **Node.js 22+** (for local development)
+- **Git** (for version control)
+
+---
+
+**Ready to manage your Minecraft servers like a pro?** 🚀
+
+Start with `npm run dev:start` and open [http://localhost:3000](http://localhost:3000)!
+
+
