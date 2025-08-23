@@ -27,18 +27,26 @@ npm run dev:start
 
 ### **Step 2: Test Everything Works**
 ```bash
-npm run test:dev
+npm run test
 ```
 
 **Expected output:**
 ```
-🧪 Testing Bedrock Manager Dev Environment...
-🏥 Health: healthy (1.0.0)
-📋 Running API tests...
-✅ Health Check - 200
-✅ List Servers - 200 (Found 2 items)
-✅ List Worlds - 200 (Found 1 items)
-🎉 Quick tests complete!
+🧪 Integration Testing
+=====================================
+
+🔍 Checking environment...
+✅ Dev containers are running
+✅ Test data exists
+
+🚀 Starting tests...
+
+✅ Health API
+✅ Server Management
+✅ World Management
+✅ Addon Management
+
+🎉 All tests completed successfully!
 ```
 
 ### **Step 3: Open the UI**
@@ -54,7 +62,7 @@ npm run dev:stop
 | Command | What It Does | When to Use |
 |---------|-------------|-------------|
 | `npm run dev:start` | 🚀 Start dev environment | Beginning of development session |
-| `npm run test:dev` | 🧪 Quick health check | After making changes, before testing |
+| `npm run test` | 🧪 Run integration tests | After making changes, verify API behavior |
 | `npm run dev:logs` | 📋 View real-time logs | Debugging issues, monitoring |
 | `npm run dev:restart` | 🔄 Restart containers | After config changes, if things break |
 | `npm run dev:stop` | 🛑 Stop everything | End of development session |
@@ -67,7 +75,7 @@ npm run dev:stop
 npm run dev:start
 
 # Verify everything works
-npm run test:dev
+npm run test
 
 # Open browser
 # http://localhost:3000
@@ -75,7 +83,7 @@ npm run test:dev
 
 ### **During Development**
 1. **Edit code** → See changes instantly (hot reload)
-2. **Test changes** → `npm run test:dev` (takes seconds)
+2. **Test changes** → `npm run test` (verify API behavior)
 3. **Debug issues** → `npm run dev:logs` (real-time logs)
 4. **Repeat** → Fast iteration cycle
 
@@ -107,9 +115,9 @@ bedrock-manager/
 
 ## 🧪 **Testing Strategy**
 
-### **Quick Tests (Recommended)**
+### **Integration Tests (Recommended)**
 ```bash
-npm run test:dev
+npm run test
 ```
 - ✅ **Fast**: Runs in seconds
 - ✅ **Comprehensive**: Tests all core endpoints
@@ -204,8 +212,8 @@ npm run dev:restart
 
 ### **3. Test**
 ```bash
-# Quick test
-npm run test:dev
+# Run integration tests
+npm run test
 
 # Manual testing
 # Open http://localhost:3000
@@ -220,7 +228,7 @@ npm run all-checks
 
 ### **Fast Iteration**
 - Keep containers running between changes
-- Use `npm run test:dev` frequently
+- Use `npm run test` frequently
 - Hot reload shows changes instantly
 
 ### **Efficient Testing**

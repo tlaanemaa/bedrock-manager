@@ -32,8 +32,8 @@ npm run dev:start
 
 ### 2. **Test Everything Works**
 ```bash
-# Quick health check and API tests
-npm run test:dev
+# Run integration tests against running containers
+npm run test
 ```
 
 ### 3. **Open the UI**
@@ -49,10 +49,52 @@ npm run dev:stop
 | Command | What It Does |
 |---------|-------------|
 | `npm run dev:start` | 🚀 Start dev environment (containers + hot reload) |
-| `npm run test:dev` | 🧪 Quick test of running service |
+| `npm run test` | 🧪 Run integration tests against running containers |
 | `npm run dev:logs` | 📋 View container logs |
 | `npm run dev:restart` | 🔄 Restart dev environment |
 | `npm run dev:stop` | 🛑 Stop and clean up |
+
+## 🧪 **Testing**
+
+**Minimal tests for maximum confidence as you code**
+
+Run container stack. Hit it with requests. Observe results. That's it.
+
+### **Quick Test Workflow**
+```bash
+# 1. Start containers
+npm run dev:start
+
+# 2. Run tests
+npm run test
+
+# 3. Stop containers when done
+npm run dev:stop
+```
+
+### **What Tests Do**
+- **Hit the API** - Make requests to your running containers
+- **Check responses** - Verify API behavior is correct  
+- **Observe side effects** - Look into containers to see what changed
+- **Give confidence** - Know your code works as expected
+
+### **Test Files**
+- `health.test.mjs` - API health checks
+- `servers.test.mjs` - Server management
+- `worlds.test.mjs` - World operations
+- `addons.test.mjs` - Addon handling
+
+### **Debugging Tests**
+```bash
+# Check container logs
+npm run dev:logs
+
+# Restart containers
+npm run dev:restart
+
+# Run specific test
+npm run test -- tests/health.test.mjs
+```
 
 ## 🌟 **Key Features**
 
@@ -122,7 +164,7 @@ npm install
 npm run dev:start
 
 # Test everything works
-npm run test:dev
+npm run test
 
 # Open in browser
 # http://localhost:3000
@@ -132,7 +174,7 @@ npm run test:dev
 
 1. **Start dev environment**: `npm run dev:start`
 2. **Make changes**: Edit files, see changes instantly
-3. **Test changes**: `npm run test:dev`
+3. **Test changes**: `npm run test`
 4. **Run checks**: `npm run all-checks`
 5. **Submit PR**: With clear description of changes
 

@@ -16,17 +16,9 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci
 
-# Create test directories and set up test data
-RUN mkdir -p /app/test-data/servers \
-    && mkdir -p /app/test-data/worlds \
-    && mkdir -p /app/test-data/temp \
+# Create necessary directories
+RUN mkdir -p /app/test-data \
     && mkdir -p /app/test-worlds
-
-# Set up basic test data structure
-RUN mkdir -p /app/test-data/servers/testserver/worlds/test-world \
-    && echo "Test World" > /app/test-data/servers/testserver/worlds/test-world/levelname.txt \
-    && echo "[]" > /app/test-data/servers/testserver/worlds/test-world/world_behavior_packs.json \
-    && echo "[]" > /app/test-data/servers/testserver/worlds/test-world/world_resource_packs.json
 
 # Expose port
 EXPOSE 3000

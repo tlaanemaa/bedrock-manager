@@ -1,7 +1,32 @@
 ---
 alwaysApply: true
 ---
-This is a Minecraft Bedrock application written with NextJS 15. See docs/SPECIFICATION.md for more info about the project.
 
-Some guidance:
-- Test your work by running `npm run all-checks`
+# Bedrock Manager
+
+Minecraft Bedrock server management app built with NextJS 15, React 19, Docker.
+
+## Development
+
+```bash
+npm run dev:start    # Start containers + hot reload
+npm run test         # Run integration tests
+npm run all-checks   # Lint + type check
+npm run dev:stop     # Clean up
+```
+
+## Workflow
+1. `npm run dev:start` - Start dev environment
+2. Code (hot reload enabled)
+3. `npm run test` - Test against running containers
+4. `npm run all-checks` - Quality checks
+5. **GUI Testing** - Use Puppeteer MCP tools to test UI
+6. `npm run dev:stop` - Clean up
+
+## Testing
+Minimal tests for maximum confidence. Tests hit running containers, check API responses, observe side effects in the containers.
+
+## Docs
+- **README.md** - Project overview, testing
+- **docs/DEVELOPMENT.md** - Complete guide
+- **docs/SPECIFICATION.md** - API specs

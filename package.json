@@ -13,7 +13,7 @@
     "dev:stop": "docker-compose -f docker-compose.dev.yml down",
     "dev:restart": "docker-compose -f docker-compose.dev.yml restart",
     "dev:logs": "docker-compose -f docker-compose.dev.yml logs -f",
-    "test:dev": "node test/test-dev.mjs"
+    "test": "jest"
   },
   "dependencies": {
     "@types/archiver": "^6.0.3",
@@ -30,11 +30,13 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
+    "jest": "^30.0.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
