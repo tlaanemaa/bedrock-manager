@@ -3,10 +3,10 @@ import { stopContainer } from '@/lib/docker';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     
     // For now, we'll assume the id is the container ID
     // In a real implementation, you might want to look up the server by name

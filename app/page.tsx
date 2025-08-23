@@ -9,6 +9,7 @@ export default function Dashboard() {
   const { worlds, error: worldsError, setWorlds, setError: setWorldsError } = useWorldsStore();
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateServer, setShowCreateServer] = useState(false);
+  const [showImportWorld, setShowImportWorld] = useState(false);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -101,6 +102,61 @@ export default function Dashboard() {
       }
     } catch (error) {
       console.error('Error creating server:', error);
+    }
+  };
+
+  const handleImportWorld = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const worldName = formData.get('worldName') as string;
+    const mcworldFile = (formData.get('mcworldFile') as File);
+
+    if (!mcworldFile) {
+      console.error('No file selected');
+      return;
+    }
+
+    try {
+      const uploadFormData = new FormData();
+      uploadFormData.append('worldName', worldName);
+      uploadFormData.append('mcworldFile', mcworldFile);
+
+      const response = await fetch('/api/worlds/import', {
+        method: 'POST',
+        body: uploadFormData
+      });
+
+      if (response.ok) {
+        setShowImportWorld(false);
+        // Refresh data to show new world
+        setTimeout(fetchData, 2000); // Wait a bit for import to complete
+      } else {
+        console.error('Failed to import world');
+      }
+    } catch (error) {
+      console.error('Error importing world:', error);
+    }
+  };
+
+  const handleExportWorld = async (worldId: string, worldName: string) => {
+    try {
+      const response = await fetch(`/api/worlds/${worldId}/export`);
+      if (response.ok) {
+        // Create a download link for the exported file
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${worldName}.mcworld`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } else {
+        console.error('Failed to export world');
+      }
+    } catch (error) {
+      console.error('Error exporting world:', error);
     }
   };
 
@@ -248,11 +304,22 @@ export default function Dashboard() {
           {/* Worlds Section */}
           <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl shadow-2xl">
             <div className="px-6 py-4 border-b border-gray-700">
-              <div className="flex items-center space-x-2">
-                <svg className="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h2 className="text-lg font-medium text-white">Worlds</h2>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <svg className="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <h2 className="text-lg font-medium text-white">Worlds</h2>
+                </div>
+                <button
+                  onClick={() => setShowImportWorld(true)}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors flex items-center space-x-2"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                  </svg>
+                  <span>Import World</span>
+                </button>
               </div>
               <p className="text-sm text-gray-400 mt-1">{worlds.length} world(s) available</p>
             </div>
@@ -288,12 +355,24 @@ export default function Dashboard() {
                             </p>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-xs text-gray-400">
-                            {new Date(world.lastModified).toLocaleDateString()}
-                          </div>
-                          <div className="text-xs text-gray-500 mt-1">
-                            {(world.size / 1024 / 1024).toFixed(1)} MB
+                        <div className="flex items-center space-x-3">
+                          <button
+                            onClick={() => handleExportWorld(world.id, world.name)}
+                            className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors flex items-center space-x-1"
+                          >
+                            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>Export</span>
+                          </button>
+                          
+                          <div className="text-right">
+                            <div className="text-xs text-gray-400">
+                              {new Date(world.lastModified).toLocaleDateString()}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {(world.size / 1024 / 1024).toFixed(1)} MB
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -360,6 +439,66 @@ export default function Dashboard() {
                   className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
                 >
                   Create Server
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Import World Modal */}
+      {showImportWorld && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 w-full max-w-md mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-white">Import World</h3>
+              <button
+                onClick={() => setShowImportWorld(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <form onSubmit={handleImportWorld} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">World Name</label>
+                <input
+                  type="text"
+                  name="worldName"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter world name"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Upload .mcworld File</label>
+                <input
+                  type="file"
+                  name="mcworldFile"
+                  accept=".mcworld"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">Select a .mcworld file to import</p>
+              </div>
+              
+              <div className="flex space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowImportWorld(false)}
+                  className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                >
+                  Import World
                 </button>
               </div>
             </form>
