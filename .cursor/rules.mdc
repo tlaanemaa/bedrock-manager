@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+This is a Minecraft Bedrock application written with NextJS 15. See docs/SPECIFICATION.md for more info about the project.
+
+Some guidance:
+- Test your work by running `npm run all-checks`

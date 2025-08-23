@@ -5,8 +5,10 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
+    "type-check": "tsc --noEmit",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "all-checks": "npm run lint && npm run type-check"
   },
   "dependencies": {
     "@types/dockerode": "^3.3.43",
