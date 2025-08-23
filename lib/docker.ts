@@ -1,26 +1,8 @@
 import Docker from 'dockerode';
 import { DOCKER, SERVER } from './constants';
+import { ContainerInfo } from './types';
 
 const docker = new Docker();
-
-export interface ContainerInfo {
-  id: string;
-  name: string;
-  status: 'running' | 'stopped' | 'starting' | 'stopping';
-  image: string;
-  ports: string[];
-  mounts: string[];
-  created: Date;
-}
-
-export interface ServerStatus {
-  id: string;
-  name: string;
-  status: 'running' | 'stopped';
-  port: number;
-  world?: string;
-  containerId: string;
-}
 
 /**
  * Get all running Minecraft containers

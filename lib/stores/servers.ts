@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ServerStatus } from '../docker';
+import { ServerStatus } from '../types';
 
 interface ServersState {
   servers: ServerStatus[];

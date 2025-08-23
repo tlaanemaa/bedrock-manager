@@ -5,8 +5,6 @@
  */
 
 describe('Addon Management', () => {
-  const baseUrl = 'http://localhost:3000';
-
   describe('Addon Endpoints', () => {
     it('should have placeholder for addon tests', () => {
       // For now, we'll test basic addon functionality

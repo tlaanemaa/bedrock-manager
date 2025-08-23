@@ -1,24 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { PATHS } from './constants';
-
-export interface WorldInfo {
-  id: string;
-  name: string;
-  path: string;
-  serverMount: string;
-  addons: string[];
-  size: number;
-  lastModified: Date;
-}
-
-export interface AddonInfo {
-  name: string;
-  type: 'behavior' | 'resource';
-  path: string;
-}
-
-
+import { WorldInfo, AddonInfo } from './types';
 
 /**
  * Get all server mount directories

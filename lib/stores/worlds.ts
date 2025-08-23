@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { WorldInfo } from '../filesystem';
+import { WorldInfo } from '../types';
 
 interface WorldsState {
   worlds: WorldInfo[];
