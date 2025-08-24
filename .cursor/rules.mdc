@@ -18,9 +18,12 @@ alwaysApply: true
 5. `npm run test` – run integration tests
 6. `npm run dev:stop` – clean up
 
-## Notes
+## Principals
 
-- Minimal tests → fast feedback, high confidence
+- Code is liability, every line of code must be scrutinized and have a clear reason to exist.
+- Always prefer the simplest solution. Optimize for clarity and maintainability.
+- In your edits, make sure you clean up old code that is no longer used.
+- Prefer integration tests that prove functionality with the least effort.
 
 ## Other Docs
 
