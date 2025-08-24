@@ -2,31 +2,28 @@
 alwaysApply: true
 ---
 
-# Bedrock Manager
+## Tech Stack
 
-Minecraft Bedrock server management app built with NextJS 15, React 19, Docker.
-
-## Development
-
-```bash
-npm run dev:start    # Start containers + hot reload
-npm run test         # Run integration tests
-npm run all-checks   # Lint + type check
-npm run dev:stop     # Clean up
-```
+- Next.js 15 + React 19: frontend with hot reload
+- Docker Compose: local dev + test Minecraft server (realistic env)
+- Tailwind 4: styling via `globals.css`
+- Puppeteer MCP: GUI test automation
 
 ## Workflow
-1. `npm run dev:start` - Start dev environment
-2. Code (hot reload enabled)
-3. `npm run test` - Test against running containers
-4. `npm run all-checks` - Quality checks
-5. **GUI Testing** - Use Puppeteer MCP tools to test UI
-6. `npm run dev:stop` - Clean up
 
-## Testing
-Minimal tests for maximum confidence. Tests hit running containers, check API responses, observe side effects in the containers.
+1. `npm run dev:start` – start containers + hot reload
+2. Code
+3. `npm run all-checks` – lint + type check
+4. GUI test with Puppeteer MCP
+5. `npm run test` – run integration tests
+6. `npm run dev:stop` – clean up
 
-## Docs
-- **README.md** - Project overview, testing
-- **docs/DEVELOPMENT.md** - Complete guide
-- **docs/SPECIFICATION.md** - API specs
+## Notes
+
+- Minimal tests → fast feedback, high confidence
+
+## Other Docs
+
+- `README.md` – overview
+- `docs/DEVELOPMENT.md` – full guide
+- `docs/SPECIFICATION.md` – API spec
