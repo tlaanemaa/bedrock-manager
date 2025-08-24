@@ -20,6 +20,8 @@ alwaysApply: true
 
 ## Principals
 
+- Think critically and do not yes-man the user!
+- Prefer OOP with SOLID principles but follow NextJS conventions where appropriate
 - Code is liability, every line of code must be scrutinized and have a clear reason to exist.
 - Always prefer the simplest solution. Optimize for clarity and maintainability.
 - In your edits, make sure you clean up old code that is no longer used.
